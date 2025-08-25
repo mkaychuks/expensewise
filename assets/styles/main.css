@@ -1,4 +1,4 @@
-@import "tailwindcss" ;
+@import "tailwindcss";
 @import "@nuxt/ui";
 
 @theme static {
@@ -6,17 +6,18 @@
   --container-8xl: 100rem;
 }
 
-* {
-  scroll-behavior: smooth;
-  overscroll-behavior: contain;
-  font-family: var(--font-manrope);
-}
-
 :root {
   --ui-primary: black;
-  --ui-container: var(--container-8xl)
+  --ui-container: var(--container-8xl);
 }
 
 .dark {
   --ui-primary: white;
+  --ui-container: var(--container-8xl);
+}
+
+* {
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+  font-family: var(--font-manrope);
 }
