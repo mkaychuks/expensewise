@@ -7,7 +7,7 @@ const props = defineProps({
 
 const errorMessage = computed(() => {
   if (props.error?.statusCode === 404) {
-    return "The page you are looking for does not exist.";
+    return "We couldn't find the page you were looking for. It might have been moved or deleted.";
   } else {
     return "An unexpected error occurred.";
   }
@@ -29,7 +29,7 @@ const handleNavigation = () => {
       <h1 class="font-bold text-xl">
         {{ errorMessage }}
       </h1>
-      <Button @click="handleNavigation">Go back home</Button>
+      <Button @click="handleNavigation" size="xl">Go back home</Button>
     </div>
   </Container>
 </template>
