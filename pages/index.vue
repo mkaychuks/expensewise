@@ -1,8 +1,4 @@
-<script setup lang="ts">
-const navigateToRegister = () => {
-  navigateTo("/signup");
-};
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <!-- the hero section  -->
@@ -29,9 +25,15 @@ const navigateToRegister = () => {
         <span class="text-green-600 font-bold">No more money mysteries.</span>
       </p>
       <div class="flex gap-4 my-5 lg:my-10">
-        <Button size="xl" @click="navigateToRegister">Get Started Free</Button>
-        <Button color="secondary" size="xl" @click="navigateToRegister"
-          >View Demo</Button
+        <NuxtLink
+          to="/signup"
+          class="bg-primary px-3 py-2 text-base gap-2 rounded-md text-white"
+          >Get Started Free</NuxtLink
+        >
+        <NuxtLink
+          to="/signup"
+          class="bg-secondary px-3 py-2 text-base gap-2 rounded-md text-white"
+          >View Demo</NuxtLink
         >
       </div>
       <!-- Trust badge or testimonial -->
@@ -102,8 +104,10 @@ const navigateToRegister = () => {
         pro.
       </p>
       <div class="flex gap-4 my-5 lg:my-10">
-        <Button size="xl" @click="navigateToRegister"
-          >Start Tracking Now</Button
+        <NuxtLink
+          to="/signup"
+          class="bg-primary px-3 py-2 text-base gap-2 rounded-md text-white"
+          >Start Tracking Now</NuxtLink
         >
       </div>
     </div>
