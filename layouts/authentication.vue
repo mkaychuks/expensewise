@@ -2,9 +2,8 @@
 
 <template>
   <nav>
-    <div class="flex items-center justify-between">
-      <!-- the logo section -->
-      <h1 class="font-bold leading-0">LOGOiPSUM</h1>
+    <div>
+      <NuxtLink to="/" class="font-bold">LOGOiPSUM</NuxtLink>
     </div>
   </nav>
   <main>
