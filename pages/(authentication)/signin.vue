@@ -24,6 +24,7 @@ const state = reactive<Schema>({
 const { loginUser, loading, error } = useAuth();
 
 const toast = useToast();
+const router = useRouter();
 const onSubmit = async (event: FormSubmitEvent<Schema>) => {
   await loginUser(event.data.email, event.data.password);
   if (error.value) {
@@ -34,6 +35,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
     });
     console.log(error.value);
   } else {
+    router.push("/dashboard");
     toast.add({
       title: "Success",
       description: "User login successful",
