@@ -3,10 +3,11 @@
 </script>
 
 <template>
-  <MobileNavbar/>
+  <DashboardNavbar/>
   <main>
     <slot/>
   </main>
+  <Footer/>
 </template>
 
 <style scoped></style>

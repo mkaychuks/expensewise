@@ -1,6 +1,7 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
 import { useFirebaseAuth } from "vuefire";
 
@@ -41,5 +42,10 @@ export const useAuth = () => {
     }
   };
 
-  return { register, loginUser, loading, error };
+  // const signout/logout
+  const logOut = async () => {
+    await signOut(auth!);
+  };
+
+  return { register, loginUser, logOut, loading, error };
 };

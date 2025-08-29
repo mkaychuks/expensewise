@@ -1,5 +1,18 @@
 <script setup lang="ts">
 const showMenu = ref(false);
+
+const { logOut } = useAuth();
+const toast = useToast();
+const signOut = async () => {
+  await logOut().then(() => {
+    navigateTo("/signin");
+    toast.add({
+      title: "Success",
+      description: "User logout successful",
+      color: "primary",
+    });
+  });
+};
 </script>
 
 <template>
@@ -14,7 +27,14 @@ const showMenu = ref(false);
         <li><NuxtLink>Dashboard</NuxtLink></li>
         <li><NuxtLink>Transactions</NuxtLink></li>
         <li><NuxtLink>Reports</NuxtLink></li>
-        <li><Button class="text-base font-normal" leading-icon="lucide:log-out">Logout</Button></li>
+        <li>
+          <Button
+            @click="signOut"
+            class="text-base font-normal"
+            leading-icon="lucide:log-out"
+            >Logout</Button
+          >
+        </li>
       </ul>
     </div>
     <!-- the mobile navigation -->
@@ -44,7 +64,14 @@ const showMenu = ref(false);
         <li><NuxtLink>Dashboard</NuxtLink></li>
         <li><NuxtLink>Transactions</NuxtLink></li>
         <li><NuxtLink>Reports</NuxtLink></li>
-        <li><Button class="text-base font-normal" leading-icon="lucide:log-out">Logout</Button></li>
+        <li>
+          <Button
+            @click="signOut"
+            class="text-base font-normal"
+            leading-icon="lucide:log-out"
+            >Logout</Button
+          >
+        </li>
       </ul>
     </div>
   </nav>
