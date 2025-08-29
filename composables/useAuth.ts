@@ -2,15 +2,24 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  sendPasswordResetEmail,
+  updateProfile,
 } from "firebase/auth";
+import { doc, setDoc, collection } from "firebase/firestore";
 import { useFirebaseAuth } from "vuefire";
 
 export const useAuth = () => {
-  const auth = useFirebaseAuth();
+  const auth = useFirebaseAuth(); // the auth function from vuefire
+  const db = useFirestore(); // the firestore function from vuefire
   const loading = ref(false);
   const error = ref<string | null>(null);
+
   // the register function
-  const register = async (email: string, password: string) => {
+  const register = async (
+    username: string,
+    email: string,
+    password: string
+  ) => {
     loading.value = true;
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -18,6 +27,13 @@ export const useAuth = () => {
         email,
         password
       );
+      const user = userCredential.user;
+      await updateProfile(user, { displayName: username });
+      setDoc(doc(db, "users", userCredential.user.uid), {
+        username,
+        email,
+        createdAt: new Date().toISOString(),
+      });
       loading.value = false;
       return userCredential.user;
     } catch (err) {
@@ -30,10 +46,11 @@ export const useAuth = () => {
 
   // const login
   const loginUser = async (email: string, password: string) => {
-    loading.value = true;
     try {
-      await signInWithEmailAndPassword(auth!, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth!, email, password);
+      
       loading.value = false;
+        return userCredential
     } catch (err) {
       loading.value = false;
       error.value = (err as Error).message;
@@ -47,5 +64,19 @@ export const useAuth = () => {
     await signOut(auth!);
   };
 
-  return { register, loginUser, logOut, loading, error };
+  //request reset password
+  const passwordResetEmail = async (email: string) => {
+    loading.value = true;
+    try {
+      await sendPasswordResetEmail(auth!, email);
+      loading.value = false;
+    } catch (err) {
+      loading.value = false;
+      error.value = (err as Error).message;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  return { register, loginUser, logOut, loading, error, passwordResetEmail };
 };

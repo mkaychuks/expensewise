@@ -55,7 +55,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
       <Form
         :state="state"
         :schema="schema"
-        @submit="onSubmit"
+        @submit.prevent="onSubmit"
         class="w-full lg:max-w-lg space-y-6"
       >
         <!-- the email field -->
@@ -92,7 +92,15 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
               />
             </template>
           </Input>
+          <!-- Forgot password -->
+        <p class="mt-3">
+          Forgot my password?
+          <NuxtLink to="/forgot-password" class="cursor-pointer underline"
+            >Help</NuxtLink
+          >
+        </p>
         </FormField>
+        
         <!-- the button -->
         <Button
           type="submit"

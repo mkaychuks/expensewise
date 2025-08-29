@@ -9,7 +9,10 @@ definePageMeta({
 // the zod schema
 const schema = z.object({
   email: z.email("Please input a valid email").nonempty("Please input email"),
-  password: z.string().nonempty("Please input password").min(8, "Password must be at least 8 characters long"),
+  password: z
+    .string()
+    .nonempty("Please input password")
+    .min(8, "Password must be at least 8 characters long"),
   username: z.string().nonempty("Please input username"),
 });
 type Schema = z.output<typeof schema>;
@@ -26,16 +29,18 @@ const state = reactive<Schema>({
 const { register, loading, error } = useAuth();
 
 const toast = useToast();
+const router = useRouter();
 const onSubmit = async (event: FormSubmitEvent<Schema>) => {
-  await register(event.data.email, event.data.password);
-  if(error.value){
+  await register(event.data.username, event.data.email, event.data.password);
+  if (error.value) {
     toast.add({
       title: "Error",
       description: "An account with this credential already exists.",
       color: "error",
     });
-    console.log(error.value)
+    console.log(error.value);
   } else {
+    router.push("/dashboard");
     toast.add({
       title: "Success",
       description: "User credentials have been successfully submitted.",
@@ -55,7 +60,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
       <Form
         :state="state"
         :schema="schema"
-        @submit="onSubmit"
+        @submit.prevent="onSubmit"
         class="w-full lg:max-w-lg space-y-6"
       >
         <!-- the email field -->
