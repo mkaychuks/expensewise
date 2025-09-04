@@ -78,25 +78,25 @@ const yFormatter = (tick: number) => tick.toString();
     <!-- the cards -->
     <div class="flex items-center gap-4">
       <!-- card 1 -->
-      <Card class="bg-gray-300 w-full md:max-w-sm" variant="soft">
+      <Card class="bg-[#EDEDED] w-full md:max-w-sm" variant="soft">
         <div>
-          <p>Income</p>
-          <h2>5,000</h2>
-          <small>+5%</small>
+          <p class="font-semibold">Income</p>
+          <h2 class="font-bold text-2xl">$5,000</h2>
+          <small class="text-green-600 font-semibold">+5%</small>
         </div>
       </Card>
       <!-- card 2 -->
-      <Card class="bg-gray-300 w-full md:max-w-sm" variant="soft">
+      <Card class="bg-[#EDEDED] w-full md:max-w-sm" variant="soft">
         <div>
-          <p>Income</p>
-          <h2>5,000</h2>
-          <small>+5%</small>
+          <p class="font-semibold">Income</p>
+          <h2 class="font-bold text-2xl">$5,000</h2>
+          <small class="text-red-500 font-semibold">-8%</small>
         </div>
       </Card>
     </div>
     <!-- the recent transactions -->
     <div class="mt-6">
-      <h1 class="font-bold text-3xl mb-4">Recent Transactions</h1>
+      <h1 class="font-bold text-2xl mb-4">Recent Transactions</h1>
       <div class="">
         <Table
           :data="data"
@@ -122,7 +122,7 @@ const yFormatter = (tick: number) => tick.toString();
           :y-formatter="yFormatter"
           :legend-position="LegendPosition.Top"
           :hide-legend="false"
-          class="max-w-lg"
+          class="max-w-lg mt-10"
         />
       </div>
     </div>
