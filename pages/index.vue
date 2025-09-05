@@ -1,4 +1,8 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+useHead({
+  title: "Expensewise",
+});
+</script>
 
 <template>
   <!-- the hero section  -->

@@ -3,67 +3,39 @@ definePageMeta({
   layout: "dashboard",
   middleware: "auth",
 });
+useHead({
+  title: "Expensewise | Dashboard",
+});
 
 const currentUser = useCurrentUser();
 
 // testing things
 const data = ref([
   {
-    id: "4600",
     date: "2024-03-11T15:30:00",
-    status: "paid",
-    email: "james.anderson@example.com",
+    description: "4600",
+    category: "paid",
     amount: 594,
   },
   {
-    id: "4599",
     date: "2024-03-11T10:10:00",
-    status: "failed",
-    email: "mia.white@example.com",
+    description: "4599",
+    category: "failed",
     amount: 276,
   },
   {
-    id: "4598",
     date: "2024-03-11T08:50:00",
-    status: "refunded",
-    email: "william.brown@example.com",
+    description: "4598",
+    category: "refunded",
     amount: 315,
   },
   {
-    id: "4597",
     date: "2024-03-10T19:45:00",
-    status: "paid",
-    email: "emma.davis@example.com",
+    description: "4597",
+    category: "paid",
     amount: 529,
   },
-  {
-    id: "4596",
-    date: "2024-03-10T15:55:00",
-    status: "paid",
-    email: "ethan.harris@example.com",
-    amount: 639,
-  },
 ]);
-
-// chart
-const RevenueData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-];
-
-const RevenueCategories = computed(() => ({
-  desktop: {
-    name: "Desktop",
-    color: "#22c55e",
-  },
-}));
-
-const xFormatter = (i: number): string => `${RevenueData[i]?.month}`;
-const yFormatter = (tick: number) => tick.toString();
 </script>
 
 <template>
@@ -88,7 +60,7 @@ const yFormatter = (tick: number) => tick.toString();
       <!-- card 2 -->
       <Card class="bg-[#EDEDED] w-full md:max-w-sm" variant="soft">
         <div>
-          <p class="font-semibold">Income</p>
+          <p class="font-semibold">Expenses</p>
           <h2 class="font-bold text-2xl">$5,000</h2>
           <small class="text-red-500 font-semibold">-8%</small>
         </div>
@@ -108,21 +80,6 @@ const yFormatter = (tick: number) => tick.toString();
             tr: 'border-gray-300',
             tbody: 'border-gray-300 border-t',
           }"
-        />
-
-        <BarChart
-          :data="RevenueData"
-          :height="300"
-          :categories="RevenueCategories"
-          :y-axis="['desktop']"
-          :x-num-ticks="6"
-          :radius="4"
-          :y-grid-line="true"
-          :x-formatter="xFormatter"
-          :y-formatter="yFormatter"
-          :legend-position="LegendPosition.Top"
-          :hide-legend="false"
-          class="max-w-lg mt-10"
         />
       </div>
     </div>

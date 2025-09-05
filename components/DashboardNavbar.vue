@@ -13,6 +13,8 @@ const signOut = async () => {
     });
   });
 };
+
+const route = useRoute();
 </script>
 
 <template>
@@ -23,10 +25,26 @@ const signOut = async () => {
     <!-- the dashboard links -->
     <div>
       <!-- the dashboard link -->
-      <ul class="hidden md:flex items-center gap-8">
-        <li><NuxtLink>Dashboard</NuxtLink></li>
-        <li><NuxtLink>Transactions</NuxtLink></li>
-        <li><NuxtLink>Reports</NuxtLink></li>
+      <ul class="hidden md:flex items-center gap-8 cursor-pointer">
+        <li class="hover:underline">
+          <NuxtLink
+            to="/dashboard"
+            :active-class="route.path === '/dashboard' ? 'underline' : 'none'"
+            >Dashboard</NuxtLink
+          >
+        </li>
+        <li class="hover:underline">
+          <NuxtLink
+            to="/dashboard/transactions"
+            :active-class="
+              route.path.startsWith('/dashboard/transactions')
+                ? 'underline'
+                : 'none'
+            "
+            >Transactions</NuxtLink
+          >
+        </li>
+        <li class="hover:underline"><NuxtLink>Reports</NuxtLink></li>
         <li>
           <Button
             @click="signOut"

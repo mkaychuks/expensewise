@@ -5,6 +5,9 @@ import type { FormSubmitEvent } from "@nuxt/ui";
 definePageMeta({
   layout: "authentication",
 });
+useHead({
+  title: 'Expensewise | Sign Up'
+})
 
 // the zod schema
 const schema = z.object({
