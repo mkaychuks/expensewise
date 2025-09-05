@@ -10,7 +10,7 @@ useHead({
   title: "Expensewise | Transactions",
 });
 
-const currentUser = useCurrentUser();
+const currentUser = useCurrentUser(); // get the current user
 const data = ref([
   {
     date: "2024-03-11T15:30:00",
@@ -38,10 +38,11 @@ const data = ref([
   },
 ]);
 const items = ref(incomeCategory);
+const incomeStore = useIncomeStore();
 
 // the zod schema
 const schema = z.object({
-  amount: z.number().min(0, "Amound should not be less than 0"),
+  amount: z.string().min(0, "Amound should not be less than 0"),
   category: z.string().nonempty("Please select a category"),
   date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: "Invalid date format",
@@ -51,9 +52,8 @@ const schema = z.object({
 type Schema = z.output<typeof schema>;
 
 // the states
-const show = ref(false);
 const state = reactive<Schema>({
-  amount: 0,
+  amount: "",
   category: "Backlog",
   date: "",
   description: "",
@@ -61,7 +61,12 @@ const state = reactive<Schema>({
 
 const toast = useToast();
 const router = useRouter();
-const onSubmit = async (event: FormSubmitEvent<Schema>) => {};
+const onSubmit = async (event: FormSubmitEvent<Schema>) => {
+  await incomeStore.addIncome(
+    { ...event.data, amount: Number(event.data.amount) },
+    currentUser.value?.uid!
+  );
+};
 </script>
 
 <template>

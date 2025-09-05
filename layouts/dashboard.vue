@@ -5,7 +5,7 @@
   <main>
     <slot />
   </main>
-  <Footer class="absolute bottom-0 right-0 left-0"/>
+  <Footer/>
 </template>
 
 <style scoped></style>

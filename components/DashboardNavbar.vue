@@ -37,9 +37,7 @@ const route = useRoute();
           <NuxtLink
             to="/dashboard/income"
             :active-class="
-              route.path.startsWith('/dashboard/income')
-                ? 'underline'
-                : 'none'
+              route.path.startsWith('/dashboard/income') ? 'underline' : 'none'
             "
             >Income</NuxtLink
           >
@@ -90,9 +88,34 @@ const route = useRoute();
       v-show="showMenu"
     >
       <ul class="flex flex-col gap-3">
-        <li><NuxtLink>Dashboard</NuxtLink></li>
-        <li><NuxtLink>Transactions</NuxtLink></li>
-        <li><NuxtLink>Reports</NuxtLink></li>
+        <li class="hover:underline">
+          <NuxtLink
+            to="/dashboard"
+            :active-class="route.path === '/dashboard' ? 'underline' : 'none'"
+            >Dashboard</NuxtLink
+          >
+        </li>
+        <li class="hover:underline">
+          <NuxtLink
+            to="/dashboard/income"
+            :active-class="
+              route.path.startsWith('/dashboard/income') ? 'underline' : 'none'
+            "
+            >Income</NuxtLink
+          >
+        </li>
+        <li class="hover:underline">
+          <NuxtLink
+            to="/dashboard/expenses"
+            :active-class="
+              route.path.startsWith('/dashboard/expenses')
+                ? 'underline'
+                : 'none'
+            "
+            >Expenses</NuxtLink
+          >
+        </li>
+        <li class="hover:underline"><NuxtLink>Reports</NuxtLink></li>
         <li>
           <Button
             @click="signOut"
