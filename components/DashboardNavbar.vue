@@ -35,13 +35,24 @@ const route = useRoute();
         </li>
         <li class="hover:underline">
           <NuxtLink
-            to="/dashboard/transactions"
+            to="/dashboard/income"
             :active-class="
-              route.path.startsWith('/dashboard/transactions')
+              route.path.startsWith('/dashboard/income')
                 ? 'underline'
                 : 'none'
             "
-            >Transactions</NuxtLink
+            >Income</NuxtLink
+          >
+        </li>
+        <li class="hover:underline">
+          <NuxtLink
+            to="/dashboard/expenses"
+            :active-class="
+              route.path.startsWith('/dashboard/expenses')
+                ? 'underline'
+                : 'none'
+            "
+            >Expenses</NuxtLink
           >
         </li>
         <li class="hover:underline"><NuxtLink>Reports</NuxtLink></li>
