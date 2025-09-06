@@ -2,6 +2,7 @@
 import * as z from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
 
+// page Meta and configs
 definePageMeta({
   middleware: "auth",
   layout: "dashboard",
@@ -10,7 +11,30 @@ useHead({
   title: "Expensewise | Transactions",
 });
 
+// the zod schema
+const schema = z.object({
+  amount: z.string().min(0, "Amound should not be less than 0"),
+  category: z.string().nonempty("Please select a category"),
+  date: z.string().refine((val) => !isNaN(Date.parse(val)), {
+    message: "Invalid date format",
+  }),
+  description: z.string().nonempty("Please add a brief description"),
+});
+type Schema = z.output<typeof schema>;
+
+// the states and composables
+const state = reactive<Schema>({
+  amount: "",
+  category: "Backlog",
+  date: "",
+  description: "",
+});
+const toast = useToast();
+const router = useRouter();
+const items = ref(incomeCategory);
 const currentUser = useCurrentUser(); // get the current user
+const incomeStore = useIncomeStore();
+const { loading, error } = storeToRefs(incomeStore);
 const data = ref([
   {
     date: "2024-03-11T15:30:00",
@@ -37,35 +61,28 @@ const data = ref([
     amount: 529,
   },
 ]);
-const items = ref(incomeCategory);
-const incomeStore = useIncomeStore();
 
-// the zod schema
-const schema = z.object({
-  amount: z.string().min(0, "Amound should not be less than 0"),
-  category: z.string().nonempty("Please select a category"),
-  date: z.string().refine((val) => !isNaN(Date.parse(val)), {
-    message: "Invalid date format",
-  }),
-  description: z.string().nonempty("Please add a brief description"),
-});
-type Schema = z.output<typeof schema>;
-
-// the states
-const state = reactive<Schema>({
-  amount: "",
-  category: "Backlog",
-  date: "",
-  description: "",
-});
-
-const toast = useToast();
-const router = useRouter();
+// Methods
 const onSubmit = async (event: FormSubmitEvent<Schema>) => {
   await incomeStore.addIncome(
     { ...event.data, amount: Number(event.data.amount) },
     currentUser.value?.uid!
   );
+  if (error.value) {
+    toast.add({
+      title: "Error",
+      description: "Adding of income failed, Please try again.",
+      color: "error",
+    });
+    console.log(error.value);
+  } else {
+    router.push("/dashboard");
+    toast.add({
+      title: "Success",
+      description: "Your income has been added successfully.",
+      color: "primary",
+    });
+  }
 };
 </script>
 
@@ -112,6 +129,25 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
                   class="w-full"
                   placeholder="Enter your recent expense amount"
                   v-model="state.amount"
+                  @keydown="
+                    (e: KeyboardEvent) => {
+                      const allowedKeys = [
+                        'Backspace',
+                        'Delete',
+                        'Tab',
+                        'ArrowLeft',
+                        'ArrowRight',
+                        'Home',
+                        'End',
+                      ];
+                      // Allow control/navigation keys
+                      if (allowedKeys.includes(e.key)) return;
+                      // Block non-numeric input
+                      if (!/^\d$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }
+                  "
                 />
               </FormField>
               <!-- the select of category -->
@@ -158,6 +194,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
               <Button
                 type="submit"
                 class="w-full flex items-center justify-center"
+                :loading="loading"
                 >Add Income</Button
               >
             </Form>

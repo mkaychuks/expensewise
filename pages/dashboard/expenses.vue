@@ -108,6 +108,25 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {};
                   class="w-full"
                   placeholder="Enter your recent expense amount"
                   v-model="state.amount"
+                  @keydown="
+                    (e: KeyboardEvent) => {
+                      const allowedKeys = [
+                        'Backspace',
+                        'Delete',
+                        'Tab',
+                        'ArrowLeft',
+                        'ArrowRight',
+                        'Home',
+                        'End',
+                      ];
+                      // Allow control/navigation keys
+                      if (allowedKeys.includes(e.key)) return;
+                      // Block non-numeric input
+                      if (!/^\d$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }
+                  "
                 />
               </FormField>
               <!-- the select of category -->

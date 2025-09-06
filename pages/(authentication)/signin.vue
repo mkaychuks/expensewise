@@ -2,12 +2,13 @@
 import * as z from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
 
+// Page meta and other configs
 definePageMeta({
   layout: "authentication",
 });
 useHead({
-  title: 'Expensewise | Sign in'
-})
+  title: "Expensewise | Sign in",
+});
 
 // the zod schema
 const schema = z.object({
@@ -16,20 +17,21 @@ const schema = z.object({
 });
 type Schema = z.output<typeof schema>;
 
-// the states
+// the states and composables
 const show = ref(false);
 const state = reactive<Schema>({
   email: "",
   password: "",
 });
-
-// the register/signup function
-const { loginUser, loading, error } = useAuth();
-
 const toast = useToast();
 const router = useRouter();
+const auth = useAuth();
+const { loading, error } = toRefs(auth);
+
+// Methods
 const onSubmit = async (event: FormSubmitEvent<Schema>) => {
-  await loginUser(event.data.email, event.data.password);
+  loading.value = true;
+  await auth.loginUser(event.data.email, event.data.password);
   if (error.value) {
     toast.add({
       title: "Error",
@@ -96,14 +98,14 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
             </template>
           </Input>
           <!-- Forgot password -->
-        <p class="mt-3">
-          Forgot my password?
-          <NuxtLink to="/forgot-password" class="cursor-pointer underline"
-            >Help</NuxtLink
-          >
-        </p>
+          <p class="mt-3">
+            Forgot my password?
+            <NuxtLink to="/forgot-password" class="cursor-pointer underline"
+              >Help</NuxtLink
+            >
+          </p>
         </FormField>
-        
+
         <!-- the button -->
         <Button
           type="submit"

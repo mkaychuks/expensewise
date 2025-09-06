@@ -2,12 +2,13 @@
 import * as z from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
 
+// page Meta and configs
 definePageMeta({
   layout: "authentication",
 });
 useHead({
-  title: 'Expensewise | Sign Up'
-})
+  title: "Expensewise | Sign Up",
+});
 
 // the zod schema
 const schema = z.object({
@@ -20,21 +21,25 @@ const schema = z.object({
 });
 type Schema = z.output<typeof schema>;
 
-// the states
+// the states and composables
 const show = ref(false);
+const toast = useToast();
+const router = useRouter();
 const state = reactive<Schema>({
   email: "",
   password: "",
   username: "",
 });
+const auth = useAuth();
+const { loading, error } = toRefs(auth);
 
-// the register/signup function
-const { register, loading, error } = useAuth();
-
-const toast = useToast();
-const router = useRouter();
+// Methods
 const onSubmit = async (event: FormSubmitEvent<Schema>) => {
-  await register(event.data.username, event.data.email, event.data.password);
+  await auth.register(
+    event.data.username,
+    event.data.email,
+    event.data.password
+  );
   if (error.value) {
     toast.add({
       title: "Error",

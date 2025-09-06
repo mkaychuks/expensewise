@@ -29,12 +29,15 @@ export const useAuth = () => {
       );
       const user = userCredential.user;
       await updateProfile(user, { displayName: username });
-      setDoc(doc(db, "users", userCredential.user.uid), {
-        username,
-        email,
-        createdAt: new Date().toISOString(),
-      });
+      if (user) {
+        setDoc(doc(db, "users", userCredential.user.uid), {
+          username,
+          email,
+          createdAt: new Date().toISOString(),
+        });
+      }
       loading.value = false;
+      error.value = null;
       return userCredential.user;
     } catch (err) {
       loading.value = false;
@@ -47,10 +50,15 @@ export const useAuth = () => {
   // const login
   const loginUser = async (email: string, password: string) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth!, email, password);
-      
+      const userCredential = await signInWithEmailAndPassword(
+        auth!,
+        email,
+        password
+      );
+
       loading.value = false;
-        return userCredential
+      error.value = null;
+      return userCredential;
     } catch (err) {
       loading.value = false;
       error.value = (err as Error).message;
