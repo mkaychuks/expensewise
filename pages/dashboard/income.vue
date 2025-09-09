@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import * as z from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
+import { onClickOutside } from "@vueuse/core";
+import { useTemplateRef } from "vue";
 
 // page Meta and configs
 definePageMeta({
@@ -63,6 +65,8 @@ const data = ref([
 ]);
 
 // Methods
+const open = ref(false);
+
 const onSubmit = async (event: FormSubmitEvent<Schema>) => {
   await incomeStore.addIncome(
     { ...event.data, amount: Number(event.data.amount) },
@@ -76,11 +80,12 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
     });
     console.log(error.value);
   } else {
-    router.push("/dashboard");
+    // router.push("/dashboard/income");
+    open.value = false;
     toast.add({
       title: "Success",
       description: "Your income has been added successfully.",
-      color: "primary",
+      color: "success",
     });
   }
 };
@@ -102,10 +107,10 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
       <div class="flex gap-3 items-center">
         <!-- category modal -->
         <!-- the transaction modal and its content -->
-        <ReuseableModal title="Add Income">
+        <ReuseableModal title="Add Income" :open="open">
           <template #modal-button>
             <Button
-              @click=""
+              @click="open = !open"
               class="text-base font-normal"
               leading-icon="lucide:circle-dollar-sign"
               >Add Income</Button
@@ -191,12 +196,21 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
                 />
               </FormField>
               <!-- the button -->
-              <Button
-                type="submit"
-                class="w-full flex items-center justify-center"
-                :loading="loading"
-                >Add Income</Button
-              >
+              <div class="flex flex-col gap-2">
+                <Button
+                  @click="open = !open"
+                  class="w-full flex items-center justify-center"
+                  color="secondary"
+                  >Cancel</Button
+                >
+                <Button
+                  ref="submitButton"
+                  type="submit"
+                  class="w-full flex items-center justify-center"
+                  :loading="loading"
+                  >Add Income</Button
+                >
+              </div>
             </Form>
           </template>
         </ReuseableModal>

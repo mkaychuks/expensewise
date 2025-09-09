@@ -58,9 +58,10 @@ const state = reactive<Schema>({
   date: "",
   description: "",
 });
-
 const toast = useToast();
 const router = useRouter();
+const open = ref(false);
+
 const onSubmit = async (event: FormSubmitEvent<Schema>) => {};
 </script>
 
@@ -81,10 +82,10 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {};
         <!-- category modal -->
 
         <!-- the transaction modal and its content -->
-        <ReuseableModal title="Add an Expense">
+        <ReuseableModal title="Add an Expense" :open="open">
           <template #modal-button>
             <Button
-              @click=""
+              @click="open = !open"
               class="text-base font-normal"
               leading-icon="lucide:circle-dollar-sign"
               >Add Expense</Button
@@ -170,11 +171,21 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {};
                 />
               </FormField>
               <!-- the button -->
-              <Button
-                type="submit"
-                class="w-full flex items-center justify-center"
-                >Add Expense</Button
-              >
+              <!-- the button -->
+              <div class="flex flex-col gap-2">
+                <Button
+                  @click="open = !open"
+                  class="w-full flex items-center justify-center"
+                  color="secondary"
+                  >Cancel</Button
+                >
+                <Button
+                  ref="submitButton"
+                  type="submit"
+                  class="w-full flex items-center justify-center"
+                  >Add Income</Button
+                >
+              </div>
             </Form>
           </template>
         </ReuseableModal>

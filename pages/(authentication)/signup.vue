@@ -52,7 +52,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
     toast.add({
       title: "Success",
       description: "User credentials have been successfully submitted.",
-      color: "primary",
+      color: "success",
     });
   }
 };
