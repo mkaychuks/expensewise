@@ -1,11 +1,20 @@
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, query, where } from "firebase/firestore";
 import { defineStore } from "pinia";
-import type { Income } from "~/types/income";
+import type { Income, IncomeResponse } from "~/types/income";
 
 export const useIncomeStore = defineStore("income", () => {
   const loading = ref<boolean>(false);
   const error = ref<string | null>(null);
   const db = useFirestore(); // the vuefire composables
+  const currentUser = useCurrentUser();
+
+  const incomes = useCollection<IncomeResponse[]>(() => {
+    if (!currentUser.value) return null;
+    return query(
+      collection(db, "income"),
+      where("userId", "==", currentUser.value.uid)
+    );
+  });
 
   // adding income to the firestore database
   const addIncome = async (income: Income, currentUser: string) => {
@@ -25,5 +34,5 @@ export const useIncomeStore = defineStore("income", () => {
     }
   };
 
-  return { loading, error, addIncome };
+  return { loading, error, addIncome, incomes };
 });

@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import * as z from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
-import { onClickOutside } from "@vueuse/core";
-import { useTemplateRef } from "vue";
+import type { IncomeResponse } from "~/types/income";
 
 // page Meta and configs
 definePageMeta({
@@ -31,42 +30,15 @@ const state = reactive<Schema>({
   date: "",
   description: "",
 });
+const openModal = ref(false);
 const toast = useToast();
-const router = useRouter();
 const items = ref(incomeCategory);
 const currentUser = useCurrentUser(); // get the current user
 const incomeStore = useIncomeStore();
+const { incomes } = storeToRefs(incomeStore);
 const { loading, error } = storeToRefs(incomeStore);
-const data = ref([
-  {
-    date: "2024-03-11T15:30:00",
-    description: "4600",
-    category: "paid",
-    amount: 594,
-  },
-  {
-    date: "2024-03-11T10:10:00",
-    description: "4599",
-    category: "failed",
-    amount: 276,
-  },
-  {
-    date: "2024-03-11T08:50:00",
-    description: "4598",
-    category: "refunded",
-    amount: 315,
-  },
-  {
-    date: "2024-03-10T19:45:00",
-    description: "4597",
-    category: "paid",
-    amount: 529,
-  },
-]);
 
 // Methods
-const open = ref(false);
-
 const onSubmit = async (event: FormSubmitEvent<Schema>) => {
   await incomeStore.addIncome(
     { ...event.data, amount: Number(event.data.amount) },
@@ -81,7 +53,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
     console.log(error.value);
   } else {
     // router.push("/dashboard/income");
-    open.value = false;
+    openModal.value = false;
     toast.add({
       title: "Success",
       description: "Your income has been added successfully.",
@@ -89,6 +61,28 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
     });
   }
 };
+
+// computed
+const incomesData = computed<IncomeResponse[]>(() => {
+  if (!incomes.value) return [];
+
+  const order: (keyof IncomeResponse)[] = [
+    "date",
+    "category",
+    "amount",
+    "description",
+  ];
+  // @ts-ignore
+  return incomes.value.map(({ userId, ...rest }) => {
+    // rebuild object in the defined order
+    const ordered = order.reduce((obj, key) => {
+      // @ts-ignore
+      obj[key] = rest[key];
+      return obj;
+    }, {} as IncomeResponse);
+    return ordered;
+  });
+});
 </script>
 
 <template>
@@ -107,10 +101,10 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
       <div class="flex gap-3 items-center">
         <!-- category modal -->
         <!-- the transaction modal and its content -->
-        <ReuseableModal title="Add Income" :open="open">
+        <ReuseableModal title="Add Income" :open="openModal">
           <template #modal-button>
             <Button
-              @click="open = !open"
+              @click="openModal = !openModal"
               class="text-base font-normal"
               leading-icon="lucide:circle-dollar-sign"
               >Add Income</Button
@@ -198,7 +192,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
               <!-- the button -->
               <div class="flex flex-col gap-2">
                 <Button
-                  @click="open = !open"
+                  @click="openModal = !openModal"
                   class="w-full flex items-center justify-center"
                   color="secondary"
                   >Cancel</Button
@@ -219,7 +213,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
     <!-- the  Income table -->
     <div class="">
       <Table
-        :data="data"
+        :data="incomesData"
         class=""
         :ui="{
           root: 'border-2 border-gray-300 rounded-md',
