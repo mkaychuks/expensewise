@@ -23,7 +23,7 @@ const schema = z.object({
 });
 type Schema = z.output<typeof schema>;
 
-// the states and composables
+// the states, stores, composables
 const state = reactive<Schema>({
   amount: "",
   category: "Backlog",
@@ -35,7 +35,7 @@ const toast = useToast();
 const items = ref(incomeCategory);
 const currentUser = useCurrentUser(); // get the current user
 const incomeStore = useIncomeStore();
-const { incomes } = storeToRefs(incomeStore);
+const { incomesData } = storeToRefs(incomeStore);
 const { loading, error } = storeToRefs(incomeStore);
 
 // Methods
@@ -63,26 +63,6 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
 };
 
 // computed
-const incomesData = computed<IncomeResponse[]>(() => {
-  if (!incomes.value) return [];
-
-  const order: (keyof IncomeResponse)[] = [
-    "date",
-    "category",
-    "amount",
-    "description",
-  ];
-  // @ts-ignore
-  return incomes.value.map(({ userId, ...rest }) => {
-    // rebuild object in the defined order
-    const ordered = order.reduce((obj, key) => {
-      // @ts-ignore
-      obj[key] = rest[key];
-      return obj;
-    }, {} as IncomeResponse);
-    return ordered;
-  });
-});
 </script>
 
 <template>
@@ -126,7 +106,7 @@ const incomesData = computed<IncomeResponse[]>(() => {
               >
                 <Input
                   class="w-full"
-                  placeholder="Enter your recent expense amount"
+                  placeholder="Enter your recent income amount"
                   v-model="state.amount"
                   @keydown="
                     (e: KeyboardEvent) => {

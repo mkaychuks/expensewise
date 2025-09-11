@@ -10,38 +10,9 @@ useHead({
   title: "Expensewise | Transactions",
 });
 
-const currentUser = useCurrentUser();
-const data = ref([
-  {
-    date: "2024-03-11T15:30:00",
-    description: "4600",
-    category: "paid",
-    amount: 594,
-  },
-  {
-    date: "2024-03-11T10:10:00",
-    description: "4599",
-    category: "failed",
-    amount: 276,
-  },
-  {
-    date: "2024-03-11T08:50:00",
-    description: "4598",
-    category: "refunded",
-    amount: 315,
-  },
-  {
-    date: "2024-03-10T19:45:00",
-    description: "4597",
-    category: "paid",
-    amount: 529,
-  },
-]);
-const items = ref(expenseCategory);
-
 // the zod schema
 const schema = z.object({
-  amount: z.number().min(0, "Amound should not be less than 0"),
+  amount: z.string().min(0, "Amound should not be less than 0"),
   category: z.string().nonempty("Please select a category"),
   date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: "Invalid date format",
@@ -50,19 +21,44 @@ const schema = z.object({
 });
 type Schema = z.output<typeof schema>;
 
-// the states
-const show = ref(false);
+// the states, stores, composables
 const state = reactive<Schema>({
-  amount: 0,
+  amount: "",
   category: "Backlog",
   date: "",
   description: "",
 });
+const openModal = ref(false);
 const toast = useToast();
-const router = useRouter();
-const open = ref(false);
+const items = ref(expenseCategory);
+const currentUser = useCurrentUser();
+const incomeStore = useIncomeStore();
+const { expensesData } = storeToRefs(incomeStore);
+const { loading, error } = storeToRefs(incomeStore);
 
-const onSubmit = async (event: FormSubmitEvent<Schema>) => {};
+// Methods
+const onSubmit = async (event: FormSubmitEvent<Schema>) => {
+  await incomeStore.addExpense(
+    { ...event.data, amount: Number(event.data.amount) },
+    currentUser.value?.uid!
+  );
+  if (error.value) {
+    toast.add({
+      title: "Error",
+      description: "Adding of expense failed, Please try again.",
+      color: "error",
+    });
+    console.log(error.value);
+  } else {
+    // router.push("/dashboard/income");
+    openModal.value = false;
+    toast.add({
+      title: "Success",
+      description: "Your expense has been added successfully.",
+      color: "success",
+    });
+  }
+};
 </script>
 
 <template>
@@ -82,10 +78,10 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {};
         <!-- category modal -->
 
         <!-- the transaction modal and its content -->
-        <ReuseableModal title="Add an Expense" :open="open">
+        <ReuseableModal title="Add an Expense" :open="openModal">
           <template #modal-button>
             <Button
-              @click="open = !open"
+              @click="openModal = !openModal"
               class="text-base font-normal"
               leading-icon="lucide:circle-dollar-sign"
               >Add Expense</Button
@@ -174,7 +170,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {};
               <!-- the button -->
               <div class="flex flex-col gap-2">
                 <Button
-                  @click="open = !open"
+                  @click="openModal = !openModal"
                   class="w-full flex items-center justify-center"
                   color="secondary"
                   >Cancel</Button
@@ -183,7 +179,8 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {};
                   ref="submitButton"
                   type="submit"
                   class="w-full flex items-center justify-center"
-                  >Add Income</Button
+                  :loading="loading"
+                  >Add Expense</Button
                 >
               </div>
             </Form>
@@ -194,7 +191,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {};
     <!-- the table -->
     <div class="">
       <Table
-        :data="data"
+        :data="expensesData"
         class=""
         :ui="{
           root: 'border-2 border-gray-300 rounded-md',

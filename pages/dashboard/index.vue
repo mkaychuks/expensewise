@@ -7,7 +7,10 @@ useHead({
   title: "Expensewise | Dashboard",
 });
 
+// states, stores and composables
 const currentUser = useCurrentUser();
+const incomeStore = useIncomeStore();
+const { totalIncome, totalExpense } = storeToRefs(incomeStore);
 
 // testing things
 const data = ref([
@@ -53,7 +56,7 @@ const data = ref([
       <Card class="bg-[#EDEDED] w-full md:max-w-sm" variant="soft">
         <div>
           <p class="font-semibold">Income</p>
-          <h2 class="font-bold text-2xl">$5,000</h2>
+          <h2 class="font-bold text-2xl">${{ totalIncome }}</h2>
           <small class="text-green-600 font-semibold">+5%</small>
         </div>
       </Card>
@@ -61,7 +64,7 @@ const data = ref([
       <Card class="bg-[#EDEDED] w-full md:max-w-sm" variant="soft">
         <div>
           <p class="font-semibold">Expenses</p>
-          <h2 class="font-bold text-2xl">$5,000</h2>
+          <h2 class="font-bold text-2xl">${{ totalExpense }}</h2>
           <small class="text-red-500 font-semibold">-8%</small>
         </div>
       </Card>
