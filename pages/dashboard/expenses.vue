@@ -45,10 +45,10 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
   if (error.value) {
     toast.add({
       title: "Error",
-      description: "Adding of expense failed, Please try again.",
+      description:
+        "Adding of expense failed due to network or due to you exceeding your balance, Please try again.",
       color: "error",
     });
-    console.log(error.value);
   } else {
     // router.push("/dashboard/income");
     openModal.value = false;

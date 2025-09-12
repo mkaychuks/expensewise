@@ -45,8 +45,13 @@ export const useIncomeStore = defineStore("income", () => {
     return incomesData.value
       .reduce((sum, income) => {
         return sum + income.amount;
-      }, 0)
-      .toLocaleString();
+      }, 0);
+  });
+
+  // fetch the user balance
+  const balance = computed(() => {
+    const leftToSpend = Number(totalIncome.value) - Number(totalExpense.value);
+    return leftToSpend;
   });
 
   // adding income to the firestore database
@@ -68,17 +73,23 @@ export const useIncomeStore = defineStore("income", () => {
   };
 
   // adding income to the firestore database
-  const addExpense = async (income: Income, currentUser: string) => {
+  const addExpense = async (expense: Income, currentUser: string) => {
     loading.value = true;
+
+    // Check balance before adding
+    if (Number(expense.amount) > Number(balance.value)) {
+      error.value = "Not enough balance. Expenses exceeded.";
+      loading.value = false;
+      return;
+    }
+
     try {
       await addDoc(collection(db, "expense"), {
-        ...income,
+        ...expense,
         userId: currentUser,
       });
-      loading.value = false;
       error.value = null;
     } catch (err) {
-      loading.value = false;
       error.value = (err as Error).message;
     } finally {
       loading.value = false;
@@ -122,8 +133,7 @@ export const useIncomeStore = defineStore("income", () => {
     return expensesData.value
       .reduce((sum, expense) => {
         return sum + expense.amount;
-      }, 0)
-      .toLocaleString();
+      }, 0);
   });
 
   return {
@@ -137,5 +147,6 @@ export const useIncomeStore = defineStore("income", () => {
     expenses,
     expensesData,
     totalExpense,
+    balance,
   };
 });
