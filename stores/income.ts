@@ -1,4 +1,11 @@
-import { addDoc, collection, query, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  orderBy,
+  query,
+  Timestamp,
+  where,
+} from "firebase/firestore";
 import { defineStore } from "pinia";
 import type { Income, IncomeResponse } from "~/types/income";
 
@@ -13,7 +20,8 @@ export const useIncomeStore = defineStore("income", () => {
     if (!currentUser.value) return null;
     return query(
       collection(db, "income"),
-      where("userId", "==", currentUser.value.uid)
+      where("userId", "==", currentUser.value.uid),
+      orderBy("dateCreated", "desc")
     );
   });
 
@@ -42,10 +50,9 @@ export const useIncomeStore = defineStore("income", () => {
   const totalIncome = computed(() => {
     if (!incomesData.value) return 0;
 
-    return incomesData.value
-      .reduce((sum, income) => {
-        return sum + income.amount;
-      }, 0);
+    return incomesData.value.reduce((sum, income) => {
+      return sum + income.amount;
+    }, 0);
   });
 
   // fetch the user balance
@@ -60,7 +67,14 @@ export const useIncomeStore = defineStore("income", () => {
     try {
       await addDoc(collection(db, "income"), {
         ...income,
+        dateCreated: Timestamp.now(),
         userId: currentUser,
+      });
+      addDoc(collection(db, "recentTransaction"), {
+        ...income,
+        userId: currentUser,
+        dateCreated: Timestamp.now(),
+        category: "income",
       });
       loading.value = false;
       error.value = null;
@@ -86,7 +100,14 @@ export const useIncomeStore = defineStore("income", () => {
     try {
       await addDoc(collection(db, "expense"), {
         ...expense,
+        dateCreated: Timestamp.now(),
         userId: currentUser,
+      });
+      addDoc(collection(db, "recentTransaction"), {
+        ...expense,
+        userId: currentUser,
+        dateCreated: Timestamp.now(),
+        category: "income",
       });
       error.value = null;
     } catch (err) {
@@ -101,7 +122,8 @@ export const useIncomeStore = defineStore("income", () => {
     if (!currentUser.value) return null;
     return query(
       collection(db, "expense"),
-      where("userId", "==", currentUser.value.uid)
+      where("userId", "==", currentUser.value.uid),
+      orderBy("dateCreated", "desc")
     );
   });
 
@@ -130,10 +152,9 @@ export const useIncomeStore = defineStore("income", () => {
   const totalExpense = computed(() => {
     if (!expensesData.value) return 0;
 
-    return expensesData.value
-      .reduce((sum, expense) => {
-        return sum + expense.amount;
-      }, 0);
+    return expensesData.value.reduce((sum, expense) => {
+      return sum + expense.amount;
+    }, 0);
   });
 
   return {

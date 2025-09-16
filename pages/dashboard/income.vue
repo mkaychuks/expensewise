@@ -14,13 +14,21 @@ useHead({
 
 // the zod schema
 const schema = z.object({
-  amount: z.string().min(0, "Amound should not be less than 0"),
-  category: z.string().nonempty("Please select a category"),
-  date: z.string().refine((val) => !isNaN(Date.parse(val)), {
-    message: "Invalid date format",
+  amount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
+    message: "Amount should not be less than 0",
   }),
+  category: z.string().nonempty("Please select a category"),
+  date: z
+    .string()
+    .refine((val) => !isNaN(Date.parse(val)), {
+      message: "Invalid date format",
+    })
+    .refine((val) => new Date(val) <= new Date(), {
+      message: "Date cannot be in the future",
+    }),
   description: z.string().nonempty("Please add a brief description"),
 });
+
 type Schema = z.output<typeof schema>;
 
 // the states, stores, composables
