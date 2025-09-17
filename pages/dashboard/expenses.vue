@@ -203,7 +203,6 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
         :ui="{
           root: 'border-2 border-gray-300 rounded-md',
           thead: 'uppercase',
-          td: 'text-green-500',
           tr: 'border-gray-300',
           tbody: 'border-gray-300 border-t',
         }"

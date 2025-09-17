@@ -7,7 +7,11 @@ import {
   where,
 } from "firebase/firestore";
 import { defineStore } from "pinia";
-import type { Income, IncomeResponse } from "~/types/income";
+import type {
+  Income,
+  IncomeResponse,
+  TransactionResponse,
+} from "~/types/income";
 
 export const useIncomeStore = defineStore("income", () => {
   const loading = ref<boolean>(false);
@@ -74,7 +78,7 @@ export const useIncomeStore = defineStore("income", () => {
         ...income,
         userId: currentUser,
         dateCreated: Timestamp.now(),
-        category: "income",
+        transaction_Type: "income",
       });
       loading.value = false;
       error.value = null;
@@ -107,7 +111,7 @@ export const useIncomeStore = defineStore("income", () => {
         ...expense,
         userId: currentUser,
         dateCreated: Timestamp.now(),
-        category: "income",
+        transaction_Type: "expense",
       });
       error.value = null;
     } catch (err) {
@@ -157,6 +161,37 @@ export const useIncomeStore = defineStore("income", () => {
     }, 0);
   });
 
+  // fetch the recent transactions from firestore
+  const recentTransation = useCollection<TransactionResponse[]>(() => {
+    if (!currentUser.value) return null;
+    return query(
+      collection(db, "recentTransaction"),
+      where("userId", "==", currentUser.value.uid),
+      orderBy("dateCreated", "desc")
+    );
+  });
+
+  const recentTransactionData = computed<TransactionResponse[]>(() => {
+    if (!recentTransation.value) return [];
+    const order: (keyof TransactionResponse)[] = [
+      "date",
+      "category",
+      "amount",
+      "description",
+      "transaction_Type",
+    ];
+    // @ts-ignore
+    return recentTransation.value.map(({ userId, ...rest }) => {
+      // rebuild object in the defined order
+      const ordered = order.reduce((obj, key) => {
+        // @ts-ignore
+        obj[key] = rest[key];
+        return obj;
+      }, {} as TransactionResponse);
+      return ordered;
+    });
+  });
+
   return {
     loading,
     error,
@@ -166,8 +201,10 @@ export const useIncomeStore = defineStore("income", () => {
     totalIncome,
     addExpense,
     expenses,
+    recentTransation,
     expensesData,
     totalExpense,
     balance,
+    recentTransactionData,
   };
 });

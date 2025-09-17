@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import type { TableColumn } from "@nuxt/ui";
+import type { TransactionResponse } from "~/types/income";
+import { h, resolveComponent } from "vue";
+
 definePageMeta({
   layout: "dashboard",
   middleware: "auth",
@@ -10,35 +14,61 @@ useHead({
 // states, stores and composables
 const currentUser = useCurrentUser();
 const incomeStore = useIncomeStore();
-const { totalIncome, totalExpense, balance } = storeToRefs(incomeStore);
+const { totalIncome, totalExpense, balance, recentTransactionData } =
+  storeToRefs(incomeStore);
+const Badge = resolveComponent("Badge");
 
-// testing things
-const data = ref([
+const columns: TableColumn<TransactionResponse>[] = [
   {
-    date: "2024-03-11T15:30:00",
-    description: "4600",
-    category: "paid",
-    amount: 594,
+    accessorKey: "date",
+    header: "Date",
+    cell: ({ row }) => {
+      return row.getValue("date");
+    },
   },
   {
-    date: "2024-03-11T10:10:00",
-    description: "4599",
-    category: "failed",
-    amount: 276,
+    accessorKey: "category",
+    header: "category",
+    cell: ({ row }) => {
+      return row.getValue("category");
+    },
   },
   {
-    date: "2024-03-11T08:50:00",
-    description: "4598",
-    category: "refunded",
-    amount: 315,
+    accessorKey: "description",
+    header: "description",
+    cell: ({ row }) => {
+      return row.getValue("description");
+    },
   },
   {
-    date: "2024-03-10T19:45:00",
-    description: "4597",
-    category: "paid",
-    amount: 529,
+    accessorKey: "amount",
+    header: "Amount",
+    cell: ({ row }) => {
+      const amount = Number.parseFloat(row.getValue("amount"));
+
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "NGN",
+      }).format(amount);
+
+      return h("div", { class: "font-medium" }, formatted);
+    },
   },
-]);
+  {
+    accessorKey: "transaction_Type",
+    header: "transaction_Type",
+    cell: ({ row }) => {
+      const color = {
+        income: "success" as const,
+        expense: "error" as const,
+      }[row.getValue("transaction_Type") as string];
+
+      return h(Badge, { class: "capitalize", variant: "subtle", color }, () =>
+        row.getValue("transaction_Type")
+      );
+    },
+  },
+];
 </script>
 
 <template>
@@ -57,7 +87,7 @@ const data = ref([
         <div>
           <p class="font-semibold">Income</p>
           <h2 class="font-bold text-2xl">
-            ${{ Number(totalIncome).toLocaleString() }}
+            NGN {{ Number(totalIncome).toLocaleString() }}
           </h2>
           <small class="text-green-600 font-semibold">+5%</small>
         </div>
@@ -67,7 +97,7 @@ const data = ref([
         <div>
           <p class="font-semibold">Expenses</p>
           <h2 class="font-bold text-2xl">
-            ${{ Number(totalExpense).toLocaleString() }}
+            NGN {{ Number(totalExpense).toLocaleString() }}
           </h2>
           <small class="text-red-500 font-semibold">-8%</small>
         </div>
@@ -77,7 +107,7 @@ const data = ref([
         <div>
           <p class="font-semibold">Available Balance</p>
           <h2 class="font-bold text-2xl">
-            ${{ Number(balance).toLocaleString() }}
+            NGN {{ Number(balance).toLocaleString() }}
           </h2>
           <small class="text-red-500 font-semibold">-8%</small>
         </div>
@@ -88,12 +118,12 @@ const data = ref([
       <h1 class="font-bold text-2xl mb-4">Recent Transactions</h1>
       <div class="">
         <Table
-          :data="data"
+          :data="recentTransactionData"
+          :columns="columns"
           class=""
           :ui="{
             root: 'border-2 border-gray-300 rounded-md',
             thead: 'uppercase',
-            td: 'text-green-500',
             tr: 'border-gray-300',
             tbody: 'border-gray-300 border-t',
           }"
