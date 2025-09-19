@@ -33,4 +33,7 @@ export default defineNuxtConfig({
       sessionCookie: false
     }
   },
+  runtimeConfig: {
+    geminiAIKey: process.env.NUXT_GEMINI_AI_KEY
+  }
 });

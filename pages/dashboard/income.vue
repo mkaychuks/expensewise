@@ -70,8 +70,6 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
     });
   }
 };
-
-// computed
 </script>
 
 <template>
@@ -87,6 +85,12 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
         </p>
       </div>
       <!-- the right -->
+      <!-- <Button
+        @click="incomeStore.generateAISummary('income', incomesData)"
+        class="text-base font-normal"
+        leading-icon="lucide:square-menu"
+        >Generate Summary</Button
+      > -->
       <div class="flex gap-3 items-center">
         <!-- Summary modal -->
         <ReuseableModal title="AI Summary of your income" :open="openAIModal">

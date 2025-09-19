@@ -192,7 +192,38 @@ export const useIncomeStore = defineStore("income", () => {
     });
   });
 
+  // the percentage of expenses with regards to the income
+  const percentageChange = computed(() => {
+    let percentage = (totalExpense.value / totalIncome.value) * 100;
+    return percentage.toFixed(2);
+  });
+
+  // const generate AI summary for income
+  const generateAISummary = async (transaction: string, data: any[]) => {
+    const prompt = `
+Here is a list of ${transaction}:
+
+${data
+  .map((e) => `- NGN${e.amount} on ${e.category} (${e.date}): ${e.description}`)
+  .join("\n")}
+
+Please write a summary highlighting how the user is ${
+      transaction == "income" ? "making" : "spending"
+    } money. Mention major categories or patterns if possible.
+`;
+    const response = await useFetch("/api/chat", {
+      body: {
+        prompt,
+      },
+      method: "POST",
+    });
+
+    console.log("=========PROMPT=====================" + prompt)
+  };
+
   return {
+    generateAISummary,
+    percentageChange,
     loading,
     error,
     addIncome,
