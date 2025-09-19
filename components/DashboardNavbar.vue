@@ -53,7 +53,6 @@ const route = useRoute();
             >Expenses</NuxtLink
           >
         </li>
-        <li class="hover:underline"><NuxtLink>Reports</NuxtLink></li>
         <li>
           <Button
             @click="signOut"
@@ -115,7 +114,6 @@ const route = useRoute();
             >Expenses</NuxtLink
           >
         </li>
-        <li class="hover:underline"><NuxtLink>Reports</NuxtLink></li>
         <li>
           <Button
             @click="signOut"

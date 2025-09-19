@@ -39,6 +39,7 @@ const state = reactive<Schema>({
   description: "",
 });
 const openModal = ref(false);
+const openAIModal = ref(false);
 const toast = useToast();
 const items = ref(incomeCategory);
 const currentUser = useCurrentUser(); // get the current user
@@ -87,7 +88,25 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
       </div>
       <!-- the right -->
       <div class="flex gap-3 items-center">
-        <!-- category modal -->
+        <!-- Summary modal -->
+        <ReuseableModal title="AI Summary of your income" :open="openAIModal">
+          <template #modal-button>
+            <Button
+              @click="openAIModal = !openAIModal"
+              class="text-base font-normal"
+              leading-icon="lucide:square-menu"
+              >Generate Summary</Button
+            >
+          </template>
+          <template #reusable-content>
+            <Button
+              @click="openAIModal = !openAIModal"
+              class="w-full flex items-center justify-center"
+              color="secondary"
+              >Close</Button
+            >
+          </template>
+        </ReuseableModal>
         <!-- the transaction modal and its content -->
         <ReuseableModal title="Add Income" :open="openModal">
           <template #modal-button>

@@ -14,8 +14,13 @@ useHead({
 // states, stores and composables
 const currentUser = useCurrentUser();
 const incomeStore = useIncomeStore();
-const { totalIncome, totalExpense, balance, recentTransactionData } =
-  storeToRefs(incomeStore);
+const {
+  totalIncome,
+  totalExpense,
+  balance,
+  recentTransactionData,
+  percentageChange,
+} = storeToRefs(incomeStore);
 const Badge = resolveComponent("Badge");
 
 const columns: TableColumn<TransactionResponse>[] = [
@@ -89,17 +94,20 @@ const columns: TableColumn<TransactionResponse>[] = [
           <h2 class="font-bold text-2xl">
             NGN {{ Number(totalIncome).toLocaleString() }}
           </h2>
-          <small class="text-green-600 font-semibold">+5%</small>
         </div>
       </Card>
       <!-- card 2 -->
       <Card class="bg-[#EDEDED] w-full md:max-w-sm" variant="soft">
         <div>
           <p class="font-semibold">Expenses</p>
-          <h2 class="font-bold text-2xl">
-            NGN {{ Number(totalExpense).toLocaleString() }}
-          </h2>
-          <small class="text-red-500 font-semibold">-8%</small>
+          <div class="flex items-center gap-2">
+            <h2 class="font-bold text-2xl">
+              NGN {{ Number(totalExpense).toLocaleString() }}
+            </h2>
+            <small class="text-red-500 font-semibold"
+              >-{{ percentageChange }}% of total income</small
+            >
+          </div>
         </div>
       </Card>
       <!-- card 3 -->
@@ -109,7 +117,6 @@ const columns: TableColumn<TransactionResponse>[] = [
           <h2 class="font-bold text-2xl">
             NGN {{ Number(balance).toLocaleString() }}
           </h2>
-          <small class="text-red-500 font-semibold">-8%</small>
         </div>
       </Card>
     </div>
