@@ -36,12 +36,13 @@ const state = reactive<Schema>({
   description: "",
 });
 const openModal = ref(false);
+const openAIModal = ref(false);
 const toast = useToast();
 const items = ref(expenseCategory);
 const currentUser = useCurrentUser();
 const incomeStore = useIncomeStore();
-const { expensesData } = storeToRefs(incomeStore);
-const { loading, error } = storeToRefs(incomeStore);
+const { loading, error, expensesData, summaryLoading, summary } =
+  storeToRefs(incomeStore);
 
 // Methods
 const onSubmit = async (event: FormSubmitEvent<Schema>) => {
@@ -66,6 +67,11 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
     });
   }
 };
+
+const generateSummary = async () => {
+  incomeStore.generateAISummary("expense", expensesData.value);
+  openAIModal.value = !openAIModal.value;
+};
 </script>
 
 <template>
@@ -83,7 +89,33 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
       <!-- the right -->
       <div class="flex gap-3 items-center">
         <!-- category modal -->
-
+        <ReuseableModal title="AI Summary of your expenses" :open="openAIModal">
+          <template #modal-button>
+            <Button
+              @click="generateSummary"
+              class="text-base font-normal"
+              leading-icon="lucide:square-menu"
+              >Generate Summary</Button
+            >
+          </template>
+          <template #reusable-content>
+            <div
+              class="w-64 mx-auto h-64 flex items-center justify-center"
+              v-if="summaryLoading"
+            >
+              <Lottie name="thinking" />
+            </div>
+            <div v-else>
+              <p class="mb-4 font-medium">{{ summary }}</p>
+              <Button
+                @click="openAIModal = !openAIModal"
+                class="w-full flex items-center justify-center"
+                color="secondary"
+                >Close</Button
+              >
+            </div>
+          </template>
+        </ReuseableModal>
         <!-- the transaction modal and its content -->
         <ReuseableModal title="Add an Expense" :open="openModal">
           <template #modal-button>

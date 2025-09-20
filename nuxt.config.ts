@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "nuxt-charts",
     "@vueuse/nuxt",
+    "nuxt-lottie"
   ],
   vite: {
     plugins: [tailwindcss()],

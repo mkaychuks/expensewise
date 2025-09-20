@@ -44,8 +44,8 @@ const toast = useToast();
 const items = ref(incomeCategory);
 const currentUser = useCurrentUser(); // get the current user
 const incomeStore = useIncomeStore();
-const { incomesData } = storeToRefs(incomeStore);
-const { loading, error } = storeToRefs(incomeStore);
+const { loading, error, incomesData, summaryLoading, summary } =
+  storeToRefs(incomeStore);
 
 // Methods
 const onSubmit = async (event: FormSubmitEvent<Schema>) => {
@@ -59,7 +59,6 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
       description: "Adding of income failed, Please try again.",
       color: "error",
     });
-    console.log(error.value);
   } else {
     // router.push("/dashboard/income");
     openModal.value = false;
@@ -69,6 +68,12 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
       color: "success",
     });
   }
+};
+
+// generate summary
+const generateSummary = async () => {
+  incomeStore.generateAISummary("income", incomesData.value);
+  openAIModal.value = !openAIModal.value;
 };
 </script>
 
@@ -85,30 +90,33 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
         </p>
       </div>
       <!-- the right -->
-      <!-- <Button
-        @click="incomeStore.generateAISummary('income', incomesData)"
-        class="text-base font-normal"
-        leading-icon="lucide:square-menu"
-        >Generate Summary</Button
-      > -->
       <div class="flex gap-3 items-center">
         <!-- Summary modal -->
         <ReuseableModal title="AI Summary of your income" :open="openAIModal">
           <template #modal-button>
             <Button
-              @click="openAIModal = !openAIModal"
+              @click="generateSummary"
               class="text-base font-normal"
               leading-icon="lucide:square-menu"
               >Generate Summary</Button
             >
           </template>
           <template #reusable-content>
-            <Button
-              @click="openAIModal = !openAIModal"
-              class="w-full flex items-center justify-center"
-              color="secondary"
-              >Close</Button
+            <div
+              class="w-64 mx-auto h-64 flex items-center justify-center"
+              v-if="summaryLoading"
             >
+              <Lottie name="thinking" />
+            </div>
+            <div v-else>
+              <p class="mb-4 font-medium">{{ summary }}</p>
+              <Button
+                @click="openAIModal = !openAIModal"
+                class="w-full flex items-center justify-center"
+                color="secondary"
+                >Close</Button
+              >
+            </div>
           </template>
         </ReuseableModal>
         <!-- the transaction modal and its content -->

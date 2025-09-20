@@ -199,29 +199,38 @@ export const useIncomeStore = defineStore("income", () => {
   });
 
   // const generate AI summary for income
+  const summary = ref<string | undefined>("");
+  const toast = useToast();
+  const summaryLoading = ref<boolean>(false);
   const generateAISummary = async (transaction: string, data: any[]) => {
-    const prompt = `
-Here is a list of ${transaction}:
-
-${data
-  .map((e) => `- NGN${e.amount} on ${e.category} (${e.date}): ${e.description}`)
-  .join("\n")}
-
-Please write a summary highlighting how the user is ${
+    summaryLoading.value = true;
+    const prompt = `Here is a list of ${transaction}:${data
+      .map(
+        (e) => `- NGN${e.amount} on ${e.category} (${e.date}): ${e.description}`
+      )
+      .join("\n")}Please write a summary highlighting how the user is ${
       transaction == "income" ? "making" : "spending"
-    } money. Mention major categories or patterns if possible.
-`;
-    const response = await useFetch("/api/chat", {
-      body: {
-        prompt,
-      },
-      method: "POST",
-    });
-
-    console.log("=========PROMPT=====================" + prompt)
+    } money. Mention major categories or patterns if possible.`;
+    try {
+      const response = await $fetch("/api/chat", {
+        body: { prompt },
+        method: "POST",
+      });
+      summary.value = response?.reply;
+      summaryLoading.value = false;
+    } catch (error) {
+      summaryLoading.value = false;
+      toast.add({
+        title: "Error",
+        description: "Failed to generate summary.",
+        color: "error",
+      });
+    }
   };
 
   return {
+    summary,
+    summaryLoading,
     generateAISummary,
     percentageChange,
     loading,
