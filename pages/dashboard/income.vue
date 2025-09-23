@@ -34,7 +34,7 @@ type Schema = z.output<typeof schema>;
 // the states, stores, composables
 const state = reactive<Schema>({
   amount: "",
-  category: "Backlog",
+  category: incomeCategory[0],
   date: "",
   description: "",
 });

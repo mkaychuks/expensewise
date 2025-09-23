@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
       },
     ],
     config: {
-      systemInstruction: "You are a financial. Your name is Neko.",
+      systemInstruction: "You are a financial adviser. Your name is Neko.",
     },
   });
   return {
