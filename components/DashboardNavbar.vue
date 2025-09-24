@@ -28,7 +28,7 @@ const route = useRoute();
     <!-- the dashboard links -->
     <div>
       <!-- the dashboard link -->
-      <ul class="hidden md:flex items-center gap-8 cursor-pointer">
+      <ul class="sm:flex items-center gap-8 cursor-pointer">
         <li class="hover:underline">
           <NuxtLink
             to="/dashboard"

@@ -61,7 +61,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
 <template>
   <!-- the form -->
   <div class="min-h-screen justify-center items-center flex flex-col">
-    <Card class="w-full lg:max-w-lg">
+    <Card class="w-full lg:max-w-lg sm:mt-10 lg:mt-0">
       <div class="mb-4">
         <h1 class="text-2xl font-bold">Create your account</h1>
       </div>

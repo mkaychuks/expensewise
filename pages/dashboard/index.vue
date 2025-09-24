@@ -14,6 +14,8 @@ useHead({
 // states, stores and composables
 const currentUser = useCurrentUser();
 const incomeStore = useIncomeStore();
+const { isDesktop } = useDesktop();
+
 const {
   totalIncome,
   totalExpense,
@@ -77,7 +79,7 @@ const columns: TableColumn<TransactionResponse>[] = [
 </script>
 
 <template>
-  <section class="md:py-6 py-4">
+  <section class="md:py-6 py-4" v-if="isDesktop">
     <!-- the salutation -->
     <div class="flex flex-col items-start">
       <h1 class="font-bold text-3xl">Dashboard</h1>
@@ -86,7 +88,7 @@ const columns: TableColumn<TransactionResponse>[] = [
       </p>
     </div>
     <!-- the cards -->
-    <div class="flex items-center gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
       <!-- card 1 -->
       <Card class="bg-[#EDEDED] w-full md:max-w-sm" variant="soft">
         <div>
@@ -138,6 +140,16 @@ const columns: TableColumn<TransactionResponse>[] = [
       </div>
     </div>
   </section>
+  <div class="w-full h-dvh justify-center items-center flex flex-col" v-else>
+    <div class="flex gap-1 items-center mb-2">
+      <img src="/logo.png" alt="logo" width="30" height="30" />
+      <h1>Expensewise</h1>
+    </div>
+    <p class="leading-tight text-center w-full">
+      This app is only available on larger screens.Please rotate your device or
+      use a desktop.
+    </p>
+  </div>
 </template>
 
 <style scoped></style>
