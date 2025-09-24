@@ -76,17 +76,8 @@ useHead({
         </Card>
         <!-- #3 -->
         <Card class="transition-transform hover:scale-105 hover:shadow-lg">
-          <Icon name="lucide:calendar-1" class="size-5" />
-          <p class="font-bold">Budget Planning</p>
-          <small
-            >Set monthly budgets and receive alerts when you're approaching your
-            limits.</small
-          >
-        </Card>
-        <!-- #4 -->
-        <Card class="transition-transform hover:scale-105 hover:shadow-lg">
           <Icon name="lucide:chart-no-axes-combined" class="size-5" />
-          <p class="font-bold">Monthly Reports</p>
+          <p class="font-bold">AI Assistant Reports</p>
           <small
             >Generate detailed reports to analyze your spending habits over
             time.</small
