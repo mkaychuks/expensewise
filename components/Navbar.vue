@@ -6,7 +6,12 @@ const user = useCurrentUser();
   <nav>
     <div class="flex items-center justify-between">
       <!-- the logo section -->
-      <NuxtLink to="/" class="font-bold">LOGOiPSUM</NuxtLink>
+      <NuxtLink to="/" class="font-bold">
+        <div class="flex gap-1 items-center">
+          <img src="/logo.png" alt="logo" width="30" height="30">
+          <h1>Expensewise</h1>
+        </div>
+      </NuxtLink>
       <!-- the buttons -->
       <div class="gap-2 flex items-center" v-if="!user">
         <NuxtLink
