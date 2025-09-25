@@ -106,7 +106,10 @@ const columns: TableColumn<TransactionResponse>[] = [
             <h2 class="font-bold text-2xl">
               NGN {{ Number(totalExpense).toLocaleString() }}
             </h2>
-            <small class="text-red-500 font-semibold"
+            <small class="text-red-500 font-semibold" v-if="Number.isNaN(percentageChange)"
+              >-0% of total income</small
+            >
+            <small class="text-red-500 font-semibold" v-else
               >-{{ percentageChange }}% of total income</small
             >
           </div>
