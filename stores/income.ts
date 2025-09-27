@@ -194,8 +194,12 @@ export const useIncomeStore = defineStore("income", () => {
 
   // the percentage of expenses with regards to the income
   const percentageChange = computed(() => {
-    let percentage = (totalExpense.value / totalIncome.value) * 100;
-    return percentage.toFixed(2);
+    if (totalExpense.value == 0) {
+      return 0;
+    } else {
+      let percentage = (totalExpense.value / totalIncome.value) * 100;
+      return percentage.toFixed(2);
+    }
   });
 
   // const generate AI summary for income
