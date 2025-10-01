@@ -2,6 +2,7 @@
 import type { TableColumn } from "@nuxt/ui";
 import type { TransactionResponse } from "~/types/income";
 import { h, resolveComponent } from "vue";
+import type { $ZodAnyInternals } from "zod/v4/core";
 
 definePageMeta({
   layout: "dashboard",
@@ -20,12 +21,12 @@ const {
   totalIncome,
   totalExpense,
   balance,
-  recentTransactionData,
+  recentTransaction,
   percentageChange,
 } = storeToRefs(incomeStore);
 const Badge = resolveComponent("Badge");
 
-const columns: TableColumn<TransactionResponse>[] = [
+const columns: TableColumn<TransactionResponse | any>[] = [
   {
     accessorKey: "date",
     header: "Date",
@@ -127,7 +128,7 @@ const columns: TableColumn<TransactionResponse>[] = [
       <h1 class="font-bold text-2xl mb-4">Recent Transactions</h1>
       <div class="">
         <Table
-          :data="recentTransactionData"
+          :data="recentTransaction"
           :columns="columns"
           class=""
           :ui="{

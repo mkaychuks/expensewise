@@ -162,7 +162,7 @@ export const useIncomeStore = defineStore("income", () => {
   });
 
   // fetch the recent transactions from firestore
-  const recentTransation = useCollection<TransactionResponse[]>(() => {
+  const recentTransaction = useCollection<TransactionResponse[]>(() => {
     if (!currentUser.value) return null;
     return query(
       collection(db, "recentTransaction"),
@@ -172,7 +172,7 @@ export const useIncomeStore = defineStore("income", () => {
   });
 
   const recentTransactionData = computed<TransactionResponse[]>(() => {
-    if (!recentTransation.value) return [];
+    if (!recentTransaction.value) return [];
     const order: (keyof TransactionResponse)[] = [
       "date",
       "category",
@@ -237,6 +237,7 @@ export const useIncomeStore = defineStore("income", () => {
     summaryLoading,
     generateAISummary,
     percentageChange,
+    recentTransaction,
     loading,
     error,
     addIncome,
@@ -245,7 +246,6 @@ export const useIncomeStore = defineStore("income", () => {
     totalIncome,
     addExpense,
     expenses,
-    recentTransation,
     expensesData,
     totalExpense,
     balance,
