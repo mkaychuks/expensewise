@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import * as z from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
-import type { IncomeResponse } from "~/types/income";
+import PaymentsTable from "~/components/PaymentsTable.vue";
 
 // page Meta and configs
 definePageMeta({
@@ -44,7 +44,7 @@ const toast = useToast();
 const items = ref(incomeCategory);
 const currentUser = useCurrentUser(); // get the current user
 const incomeStore = useIncomeStore();
-const { loading, error, incomesData, summaryLoading, summary } =
+const { loading, error, summaryLoading, summary, incomes } =
   storeToRefs(incomeStore);
 
 // Methods
@@ -72,7 +72,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
 
 // generate summary
 const generateSummary = async () => {
-  incomeStore.generateAISummary("income", incomesData.value);
+  incomeStore.generateAISummary("income", incomes.value);
   openAIModal.value = !openAIModal.value;
 };
 </script>
@@ -231,18 +231,8 @@ const generateSummary = async () => {
     </div>
     <!-- the  Income table -->
     <div class="">
-      <Table
-        :data="incomesData"
-        class=""
-        :ui="{
-          root: 'border-2 border-gray-300 rounded-md',
-          thead: 'uppercase',
-          tr: 'border-gray-300',
-          tbody: 'border-gray-300 border-t',
-        }"
-      />
+      <PaymentsTable :data="incomes" />
     </div>
-    <!-- the users income table - STOP -->
   </section>
 </template>
 

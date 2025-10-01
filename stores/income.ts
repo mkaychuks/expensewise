@@ -33,6 +33,7 @@ export const useIncomeStore = defineStore("income", () => {
   const incomesData = computed<IncomeResponse[]>(() => {
     if (!incomes.value) return [];
     const order: (keyof IncomeResponse)[] = [
+      "id",
       "date",
       "category",
       "amount",
@@ -53,7 +54,6 @@ export const useIncomeStore = defineStore("income", () => {
   // fetch the total income of a user
   const totalIncome = computed(() => {
     if (!incomesData.value) return 0;
-
     return incomesData.value.reduce((sum, income) => {
       return sum + income.amount;
     }, 0);

@@ -6,7 +6,7 @@ export interface Income {
 }
 
 export type IncomeResponse = {
-  id?: string; // Firestore doc id
+  id: string; // Firestore doc id
   amount: number;
   category: string;
   date: string;

@@ -41,7 +41,7 @@ const toast = useToast();
 const items = ref(expenseCategory);
 const currentUser = useCurrentUser();
 const incomeStore = useIncomeStore();
-const { loading, error, expensesData, summaryLoading, summary } =
+const { loading, error, expenses, summaryLoading, summary } =
   storeToRefs(incomeStore);
 
 // Methods
@@ -69,7 +69,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
 };
 
 const generateSummary = async () => {
-  incomeStore.generateAISummary("expense", expensesData.value);
+  incomeStore.generateAISummary("expense", expenses.value);
   openAIModal.value = !openAIModal.value;
 };
 </script>
@@ -229,16 +229,7 @@ const generateSummary = async () => {
     </div>
     <!-- the table -->
     <div class="">
-      <Table
-        :data="expensesData"
-        class=""
-        :ui="{
-          root: 'border-2 border-gray-300 rounded-md',
-          thead: 'uppercase',
-          tr: 'border-gray-300',
-          tbody: 'border-gray-300 border-t',
-        }"
-      />
+      <PaymentsTable :data="expenses" />
     </div>
     <!-- the Expense Table - STOP -->
   </section>
